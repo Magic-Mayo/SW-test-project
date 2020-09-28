@@ -17,18 +17,46 @@
         // function for displaying comments with param for what to search for in string
         function displayComments($toSearch){
             global $sql_link;
-            $query = "SELECT * FROM sweetwater_test WHERE";
-            
-            for($i = 0; $i < count($toSearch); $i++){
-                if($i !== 0) $query .= " OR ";
-                $current_search = $toSearch[$i];
-                $query .= " comments LIKE %$current_search%";
+            if($toSearch !== null){
+                $query = "SELECT * FROM sweetwater_test WHERE";
+                
+                for($i = 0; $i < count($toSearch); $i++){
+                    if($i !== 0) $query .= " OR ";
+                    $current_search = $toSearch[$i];
+                    $query .= " comments LIKE '%$current_search%'";
+                }
+            } else if($toSearch === null){
+                $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND NOT LIKE '%deliver%' AND NOT LIKE '%call%' AND NOT LIKE '%referred%'";
+                echo $query;
             }
-
+            
+            
+            // $query = "SELECT * FROM sweetwater_test";
             // get data from table with param in string
-            // use data to display all comments that have the string to search
-            // loop returned data and add to variable
-            // return echo statement with all comments
+            if($results = mysqli_query($sql_link, $query)){
+                if(mysqli_num_rows($results) > 0){
+                    echo "<h2>Comments about $toSearch[0]";
+                    if(count($toSearch) > 1){
+                        for($i = 0; $i < count($toSearch); $i++){
+                            echo $toSearch[$i];
+                            if($i !== count($toSearch) - 1){
+                                echo ', ';
+                                if($i === count($toSearch) - 2){
+                                    echo 'and ';
+                                }
+                            }
+                        }
+                    }
+                    echo "</h2>";
+                    // use data to display all comments that have the string to search
+                    while($row = mysqli_fetch_array($results)){
+                        echo "<br>";
+                        echo "<p>";
+                        echo $row["comments"];
+                        echo "</p>";
+                    }
+                }
+            }
             // run function that updates date by sending array of order numbers
         }
 
@@ -48,9 +76,9 @@
         // Comments about who referred me
         displayComments(array('referred'));
         // Comments about signature requirements upon delivery
-        displayComments(array('deliver', 'ship'));
+        displayComments(array('deliver'));
         // Miscellaneous comments (everything else)
-        // displayComments(null);
+        displayComments(null);
 
         mysqli_close($sql_link);
     ?>
