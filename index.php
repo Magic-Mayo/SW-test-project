@@ -8,17 +8,28 @@
 <body>
     <?php
         // connection to mysql db
-        $sql_link = mysqli_connect("hostname", "username", "password", "database");
+        $sql_link = mysqli_connect("localhost", "root", "", "sw_testdb");
+        
+        if($sql_link === false){
+            die("Could not connect to the database!");
+        }
 
-        // function displayComments($toSearch) for displaying comments with param for what to search for in string
+        // function for displaying comments with param for what to search for in string
         function displayComments($toSearch){
+            // $query = "SELECT * FROM sweetwater_test WHERE comments";
+            
+            // foreach($toSearch as $comment_includes){
+            //     $query .= " LIKE "
+            // }
+
+            // if($results = mysqli_query($sql_link, $query))
             // get data from table with param in string
             // use data to display all comments that have the string to search
             // return 
             // run function that updates date by sending array of order numbers
         }
 
-        // function updateShipDate($orders) to update shipdate_expected column
+        // function to update shipdate_expected column
         function updateShipDate($orders){
             // loop param and check:
                 // shipdate_expected column and update only if it is set to (0000-00-00 00:00:00), continue loop if already set
