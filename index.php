@@ -27,7 +27,6 @@
                 }
             } else if($toSearch === null){
                 $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND NOT LIKE '%deliver%' AND NOT LIKE '%call%' AND NOT LIKE '%referred%'";
-                echo $query;
             }
             
             // get data from table with param in string
@@ -53,7 +52,6 @@
                             if($expectedShipDate = explode('Expected Ship Date: ', $row["comments"])){
                                 if(isset($expectedShipDate[1])){
                                     $expectedShipDate = str_split($expectedShipDate[1], 8);
-                                    // echo $expectedShipDate[0];
                                     $year = explode('/', $expectedShipDate[0])[2];
                                     $month = explode('/', $expectedShipDate[0])[0];
                                     $day = explode('/', $expectedShipDate[0])[1];
@@ -74,7 +72,6 @@
         function updateShipDate($order, $date){
             global $sql_link;
             $query = "UPDATE sweetwater_test SET shipdate_expected='$date' WHERE orderid=$order";
-            echo $query;
 
             if(!mysqli_query($sql_link, $query)){
                 echo "Could not update selected data! " . mysqli_error($$sql_link);
