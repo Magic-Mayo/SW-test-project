@@ -30,8 +30,6 @@
                 echo $query;
             }
             
-            
-            // $query = "SELECT * FROM sweetwater_test";
             // get data from table with param in string
             if($results = mysqli_query($sql_link, $query)){
                 if(mysqli_num_rows($results) > 0){
@@ -50,6 +48,10 @@
                     echo "</h2>";
                     // use data to display all comments that have the string to search
                     while($row = mysqli_fetch_array($results)){
+                        if($expectedShipDate = str_split('Expected Ship Date: ')){
+                            $dateToSet = str_replace("\n", "", $expectedShipDate);
+                            updateShipDate($row["orderid"], $dateToSet[0]);
+                        }
                         echo "<br>";
                         echo "<p>";
                         echo $row["comments"];
@@ -61,7 +63,14 @@
 
         // function to update shipdate_expected column
         function updateShipDate($order, $date){
+            echo $date;
+            echo $order;
+            global $sql_link;
             $query = "UPDATE sweetwater_test SET shipdate_expected=$date WHERE orderid=$order";
+
+            if(!mysqli_query($sql_link, $query)){
+                echo "Could not update selected data! " . mysqli_error($$sql_link);
+            }
             // loop param and check:
                 // shipdate_expected column and update only if it is set to (0000-00-00 00:00:00), continue loop if already set
                 // check comment for expected shipdate. if exists, set update query to new date
