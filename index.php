@@ -17,6 +17,7 @@
         // function for displaying comments with param for what to search for in string
         function displayComments($toSearch){
             global $sql_link;
+
             if($toSearch !== null){
                 $query = "SELECT * FROM sweetwater_test WHERE";
                 
@@ -25,16 +26,23 @@
                     $current_search = $toSearch[$i];
                     $query .= " comments LIKE '% $current_search%'";
                 }
+
             } else if($toSearch === null){
-                $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND NOT LIKE '%signature%' AND NOT LIKE '%call%' AND NOT LIKE '%referred%'";
+                $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND comments NOT LIKE '%signature%' AND comments NOT LIKE '%call%' AND comments NOT LIKE '%referred%' AND comments NOT LIKE '%sign%' AND comments NOT LIKE '%smarties%' AND comments NOT LIKE '%cinnamon%'";
             }
             
             // get data from table with param in string
             if($results = mysqli_query($sql_link, $query)){
                 if(mysqli_num_rows($results) > 0){
-                    echo "<h2>Comments about $toSearch[0]";
+                    if($toSearch[0] !== null){
+                        echo "<h2>Comments about $toSearch[0]";
+                    } else {
+                        echo "<h2>Miscellaneous comments";
+                    }
+
                     if(count($toSearch) > 1){
-                        for($i = 0; $i < count($toSearch); $i++){
+                        for($i = 1; $i < count($toSearch); $i++){
+                            if($i === 1) echo ', ';
                             echo $toSearch[$i];
                             if($i !== count($toSearch) - 1){
                                 echo ', ';
@@ -44,6 +52,7 @@
                             }
                         }
                     }
+
                     echo "</h2>";
 
                     // use data to display all comments that have the string to search
@@ -59,11 +68,13 @@
                                 }
                             }
                         }
+
                         echo "<br>";
                         echo "<p>";
                         echo $row["comments"];
                         echo "</p>";
                     }
+                    echo "<br>";
                 }
             }
         }
@@ -76,21 +87,18 @@
             if(!mysqli_query($sql_link, $query)){
                 echo "Could not update selected data! " . mysqli_error($$sql_link);
             }
-            // loop param and check:
-                // shipdate_expected column and update only if it is set to (0000-00-00 00:00:00), continue loop if already set
-                // check comment for expected shipdate. if exists, set update query to new date
         }
 
 
         // Comments about candy
-        displayComments(array('candy'));
+        displayComments(array('candy', 'smarties', 'cinnamon'));
         
         // Comments about call me / don't call me
         displayComments(array('call'));
         // Comments about who referred me
         displayComments(array('referred'));
         // Comments about signature requirements upon delivery
-        displayComments(array('signature'));
+        displayComments(array('signature', 'sign'));
         // Miscellaneous comments (everything else)
         displayComments(null);
 
