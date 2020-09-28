@@ -26,7 +26,7 @@
                     $query .= " comments LIKE '% $current_search%'";
                 }
             } else if($toSearch === null){
-                $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND NOT LIKE '%deliver%' AND NOT LIKE '%call%' AND NOT LIKE '%referred%'";
+                $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND NOT LIKE '%signature%' AND NOT LIKE '%call%' AND NOT LIKE '%referred%'";
             }
             
             // get data from table with param in string
@@ -90,7 +90,7 @@
         // Comments about who referred me
         displayComments(array('referred'));
         // Comments about signature requirements upon delivery
-        displayComments(array('deliver'));
+        displayComments(array('signature'));
         // Miscellaneous comments (everything else)
         displayComments(null);
 
