@@ -23,7 +23,7 @@
                 for($i = 0; $i < count($toSearch); $i++){
                     if($i !== 0) $query .= " OR ";
                     $current_search = $toSearch[$i];
-                    $query .= " comments LIKE '%$current_search%'";
+                    $query .= " comments LIKE '% $current_search%'";
                 }
             } else if($toSearch === null){
                 $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND NOT LIKE '%deliver%' AND NOT LIKE '%call%' AND NOT LIKE '%referred%'";
@@ -49,8 +49,17 @@
 
                     // use data to display all comments that have the string to search
                     while($row = mysqli_fetch_array($results)){
-                        if($expectedShipDate = explode('Expected Ship Date: ', $row["comments"])){
-                            updateShipDate($row["orderid"], $expectedShipDate[1]);
+                        if($row["shipdate_expected"] === "0000-00-00 00:00:00"){
+                            if($expectedShipDate = explode('Expected Ship Date: ', $row["comments"])){
+                                if(isset($expectedShipDate[1])){
+                                    $expectedShipDate = str_split($expectedShipDate[1], 8);
+                                    // echo $expectedShipDate[0];
+                                    $year = explode('/', $expectedShipDate[0])[2];
+                                    $month = explode('/', $expectedShipDate[0])[0];
+                                    $day = explode('/', $expectedShipDate[0])[1];
+                                    updateShipDate($row["orderid"], $year.'/'.$month.'/'.$day);
+                                }
+                            }
                         }
                         echo "<br>";
                         echo "<p>";
@@ -63,10 +72,9 @@
 
         // function to update shipdate_expected column
         function updateShipDate($order, $date){
-            echo $date;
-            echo $order;
             global $sql_link;
-            $query = "UPDATE sweetwater_test SET shipdate_expected=$date WHERE orderid=$order";
+            $query = "UPDATE sweetwater_test SET shipdate_expected='$date' WHERE orderid=$order";
+            echo $query;
 
             if(!mysqli_query($sql_link, $query)){
                 echo "Could not update selected data! " . mysqli_error($$sql_link);
