@@ -57,11 +57,11 @@
                     }
                 }
             }
-            // run function that updates date by sending array of order numbers
         }
 
         // function to update shipdate_expected column
-        function updateShipDate($orders){
+        function updateShipDate($order, $date){
+            $query = "UPDATE sweetwater_test SET shipdate_expected=$date WHERE orderid=$order";
             // loop param and check:
                 // shipdate_expected column and update only if it is set to (0000-00-00 00:00:00), continue loop if already set
                 // check comment for expected shipdate. if exists, set update query to new date
