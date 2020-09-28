@@ -46,11 +46,11 @@
                         }
                     }
                     echo "</h2>";
+
                     // use data to display all comments that have the string to search
                     while($row = mysqli_fetch_array($results)){
-                        if($expectedShipDate = str_split('Expected Ship Date: ')){
-                            $dateToSet = str_replace("\n", "", $expectedShipDate);
-                            updateShipDate($row["orderid"], $dateToSet[0]);
+                        if($expectedShipDate = explode('Expected Ship Date: ', $row["comments"])){
+                            updateShipDate($row["orderid"], $expectedShipDate[1]);
                         }
                         echo "<br>";
                         echo "<p>";
