@@ -11,7 +11,7 @@
         $sql_link = mysqli_connect("localhost", "root", "1fafp404", "sw_testdb");
         
         if($sql_link === false){
-            die("Could not connect to the database!");
+            die("Could not connect to the database!" . mysqli_connect_error());
         }
 
         // function for displaying comments with param for what to search for in string
@@ -26,7 +26,6 @@
             }
 
             // get data from table with param in string
-            
             // use data to display all comments that have the string to search
             // loop returned data and add to variable
             // return echo statement with all comments
