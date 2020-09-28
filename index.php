@@ -8,7 +8,7 @@
 <body>
     <?php
         // connection to mysql db
-        $sql_link = mysqli_connect("localhost", "root", "", "sw_testdb");
+        $sql_link = mysqli_connect("localhost", "root", "1fafp404", "sw_testdb");
         
         if($sql_link === false){
             die("Could not connect to the database!");
@@ -16,16 +16,20 @@
 
         // function for displaying comments with param for what to search for in string
         function displayComments($toSearch){
-            // $query = "SELECT * FROM sweetwater_test WHERE comments";
+            global $sql_link;
+            $query = "SELECT * FROM sweetwater_test WHERE";
             
-            // foreach($toSearch as $comment_includes){
-            //     $query .= " LIKE "
-            // }
+            for($i = 0; $i < count($toSearch); $i++){
+                if($i !== 0) $query .= " OR ";
+                $current_search = $toSearch[$i];
+                $query .= " comments LIKE %$current_search%";
+            }
 
-            // if($results = mysqli_query($sql_link, $query))
             // get data from table with param in string
+            
             // use data to display all comments that have the string to search
-            // return 
+            // loop returned data and add to variable
+            // return echo statement with all comments
             // run function that updates date by sending array of order numbers
         }
 
@@ -38,12 +42,16 @@
 
 
         // Comments about candy
-        displayComments('candy');
-
+        displayComments(array('candy'));
+        
         // Comments about call me / don't call me
+        displayComments(array('call'));
         // Comments about who referred me
+        displayComments(array('referred'));
         // Comments about signature requirements upon delivery
+        displayComments(array('deliver', 'ship'));
         // Miscellaneous comments (everything else)
+        // displayComments(null);
     ?>
 </body>
 </html>
