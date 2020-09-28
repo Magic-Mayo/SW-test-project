@@ -52,6 +52,8 @@
         displayComments(array('deliver', 'ship'));
         // Miscellaneous comments (everything else)
         // displayComments(null);
+
+        mysqli_close($sql_link);
     ?>
 </body>
 </html>
