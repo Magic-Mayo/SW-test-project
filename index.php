@@ -28,54 +28,31 @@
                 }
 
             } else if($toSearch === null){
-                $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND comments NOT LIKE '%signature%' AND comments NOT LIKE '%call%' AND comments NOT LIKE '%referred%' AND comments NOT LIKE '%sign%' AND comments NOT LIKE '%smarties%' AND comments NOT LIKE '%cinnamon%'";
+                $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND comments NOT LIKE '%signature%' AND comments NOT LIKE '% call%' AND comments NOT LIKE '%referred%' AND comments NOT LIKE '%sign%' AND comments NOT LIKE '%smarties%' AND comments NOT LIKE '%cinnamon%'";
             }
             
             // get data from table with param in string
-            if($results = mysqli_query($sql_link, $query)){
-                if(mysqli_num_rows($results) > 0){
-                    if($toSearch[0] !== null){
-                        echo "<h2>Comments about $toSearch[0]";
-                    } else {
-                        echo "<h2>Miscellaneous comments";
+            $results = mysqli_query($sql_link, $query);
+
+            if(mysqli_num_rows($results) > 0){
+                // use data to display all comments that have the string to search
+                while($row = mysqli_fetch_array($results)){
+                    $expectedShipDate = explode('Expected Ship Date: ', $row["comments"]);
+
+                    if($row["shipdate_expected"] === "0000-00-00 00:00:00" && isset($expectedShipDate[1])){
+                        $expectedShipDate = str_split($expectedShipDate[1], 8);
+                        $year = explode('/', $expectedShipDate[0])[2];
+                        $month = explode('/', $expectedShipDate[0])[0];
+                        $day = explode('/', $expectedShipDate[0])[1];
+                        updateShipDate($row["orderid"], $year.'/'.$month.'/'.$day);
                     }
 
-                    if(count($toSearch) > 1){
-                        for($i = 1; $i < count($toSearch); $i++){
-                            if($i === 1) echo ', ';
-                            echo $toSearch[$i];
-                            if($i !== count($toSearch) - 1){
-                                echo ', ';
-                                if($i === count($toSearch) - 2){
-                                    echo 'and ';
-                                }
-                            }
-                        }
-                    }
-
-                    echo "</h2>";
-
-                    // use data to display all comments that have the string to search
-                    while($row = mysqli_fetch_array($results)){
-                        if($row["shipdate_expected"] === "0000-00-00 00:00:00"){
-                            if($expectedShipDate = explode('Expected Ship Date: ', $row["comments"])){
-                                if(isset($expectedShipDate[1])){
-                                    $expectedShipDate = str_split($expectedShipDate[1], 8);
-                                    $year = explode('/', $expectedShipDate[0])[2];
-                                    $month = explode('/', $expectedShipDate[0])[0];
-                                    $day = explode('/', $expectedShipDate[0])[1];
-                                    updateShipDate($row["orderid"], $year.'/'.$month.'/'.$day);
-                                }
-                            }
-                        }
-
-                        echo "<br>";
-                        echo "<p>";
-                        echo $row["comments"];
-                        echo "</p>";
-                    }
                     echo "<br>";
+                    echo "<p>";
+                    echo $row["comments"];
+                    echo "</p>";
                 }
+                echo "<br>";
             }
         }
 
@@ -91,15 +68,23 @@
 
 
         // Comments about candy
+        echo "<h2>Comments about candy</h2>";
         displayComments(array('candy', 'smarties', 'cinnamon'));
         
         // Comments about call me / don't call me
+        echo "<h2>Comments about call me / don't call me</h2>";
         displayComments(array('call'));
+
         // Comments about who referred me
+        echo "<h2>Comments about referrals</h2>";
         displayComments(array('referred'));
+
         // Comments about signature requirements upon delivery
+        echo "<h2>Comments about signatures</h2>";
         displayComments(array('signature', 'sign'));
+
         // Miscellaneous comments (everything else)
+        echo "<h2>Miscellaneous comments</h2>";
         displayComments(null);
 
         mysqli_close($sql_link);
