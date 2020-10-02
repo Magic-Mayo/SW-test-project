@@ -62,7 +62,7 @@
             $query = "UPDATE sweetwater_test SET shipdate_expected='$date' WHERE orderid=$order";
 
             if(!mysqli_query($sql_link, $query)){
-                echo "Could not update selected data! " . mysqli_error($$sql_link);
+                echo "Could not update selected data! " . mysqli_error($sql_link);
             }
         }
 
