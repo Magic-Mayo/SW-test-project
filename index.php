@@ -17,19 +17,18 @@
         // function for displaying comments with param for what to search for in string
         function displayComments($toSearch){
             global $sql_link;
+            
+            $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND comments NOT LIKE '%signature%' AND comments NOT LIKE '% call%' AND comments NOT LIKE '%referred%' AND comments NOT LIKE '%sign%' AND comments NOT LIKE '%smarties%' AND comments NOT LIKE '%cinnamon%'";
 
             if($toSearch !== null){
                 $query = "SELECT * FROM sweetwater_test WHERE";
-                
+                        
                 for($i = 0; $i < count($toSearch); $i++){
                     if($i !== 0) $query .= " OR ";
                     $current_search = $toSearch[$i];
                     $query .= " comments LIKE '% $current_search%'";
                 }
-
-            } else if($toSearch === null){
-                $query = "SELECT * FROM sweetwater_test WHERE comments NOT LIKE '%candy%' AND comments NOT LIKE '%signature%' AND comments NOT LIKE '% call%' AND comments NOT LIKE '%referred%' AND comments NOT LIKE '%sign%' AND comments NOT LIKE '%smarties%' AND comments NOT LIKE '%cinnamon%'";
-            }
+            } 
             
             // get data from table with param in string
             $results = mysqli_query($sql_link, $query);
@@ -65,29 +64,27 @@
                 echo "Could not update selected data! " . mysqli_error($sql_link);
             }
         }
+?>
 
-
-        // Comments about candy
-        echo "<h2>Comments about candy</h2>";
-        displayComments(array('candy', 'smarties', 'cinnamon'));
+        <!-- Comments about candy --> 
+        <h2>Comments about candy</h2>
+        <?php displayComments(array('candy', 'smarties', 'cinnamon')); ?>
         
-        // Comments about call me / don't call me
-        echo "<h2>Comments about call me / don't call me</h2>";
-        displayComments(array('call'));
+        <!-- Comments about call me / don't call me --> 
+        <h2>Comments about call me / don't call me</h2>
+        <?php displayComments(array('call')); ?>
 
-        // Comments about who referred me
-        echo "<h2>Comments about referrals</h2>";
-        displayComments(array('referred'));
+        <!-- Comments about who referred me --> 
+        <?php displayComments(array('referred')); ?>
+    
+        <!-- Comments about signature requirements upon delivery --> 
+        <h2>Comments about signatures</h2>
+        <?php displayComments(array('signature', 'sign')); ?>
 
-        // Comments about signature requirements upon delivery
-        echo "<h2>Comments about signatures</h2>";
-        displayComments(array('signature', 'sign'));
+        <!-- Miscellaneous comments (everything else) --> 
+        <h2>Miscellaneous comments</h2>
+        <?php displayComments(null); ?>
 
-        // Miscellaneous comments (everything else)
-        echo "<h2>Miscellaneous comments</h2>";
-        displayComments(null);
-
-        mysqli_close($sql_link);
-    ?>
+       <?php mysqli_close($sql_link); ?>
 </body>
 </html>
